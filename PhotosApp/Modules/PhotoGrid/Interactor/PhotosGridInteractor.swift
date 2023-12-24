@@ -10,9 +10,11 @@ import Foundation
 class PhotosGridInteractor: PhotosGridInteractable {
     
     weak var presenter: PhotosGridPresentable?
-
-    let imageLoaderService = ImageLoaderService()
-    let photoListAPIService = PhotoListAPIService()
+    let photoListAPIService: PhotoListAPIService
+    
+    init(photoListAPIService: PhotoListAPIService = .shared) {
+        self.photoListAPIService = photoListAPIService
+    }
 
     func fetchPhotos() {
         photoListAPIService.getPhotos {[weak self] result in

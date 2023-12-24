@@ -27,6 +27,11 @@ struct ImageRequest: RequestType {
 class ImageLoaderService {
     
     static let shared = ImageLoaderService()
+    let service: APIServicable
+    
+    init(service: APIServicable = APIService()) {
+        self.service = service
+    }
     
     private var imageCache = NSCache<NSString, UIImage>()
     private var cancellables: Set<AnyCancellable> = []
@@ -74,7 +79,7 @@ class ImageLoaderService {
         }
         
         let imageRequest = ImageRequest(url: imageUrl)
-        return APIService.request(imageRequest)
+        return service.request(imageRequest)
             .receive(on: DispatchQueue.main)
             .tryMap { data in
                 guard let image = UIImage(data: data) else {

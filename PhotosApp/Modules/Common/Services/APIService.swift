@@ -29,9 +29,13 @@ enum APIError: Error {
     case invalidResponse
 }
 
-class APIService {
+protocol APIServicable {
+    func request<T: RequestType>(_ request: T) -> AnyPublisher<Data, APIError>
+}
+
+class APIService: APIServicable {
     
-    static func request<T: RequestType>(_ request: T) -> AnyPublisher<Data, APIError> {
+    func request<T: RequestType>(_ request: T) -> AnyPublisher<Data, APIError> {
         guard let url = URL(string: request.url.absoluteString) else {
             return Fail(error: .invalidURL).eraseToAnyPublisher()
         }

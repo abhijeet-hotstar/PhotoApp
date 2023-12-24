@@ -28,12 +28,19 @@ struct PhotosListRequest: RequestType {
 
 class PhotoListAPIService {
     
+    static let shared = PhotoListAPIService()
+    let service: APIServicable
+    
+    init(service: APIServicable = APIService()) {
+        self.service = service
+    }
+    
     private var cancellables: Set<AnyCancellable> = []
     
     func getPhotos(completion: @escaping (Result<[Photo], Error>) -> Void) {
         let request = PhotosListRequest()
         
-        APIService.request(request)
+        service.request(request)
             .decode(type: [Photo].self, decoder: JSONDecoder())
             .receive(on: DispatchQueue.main)
             .sink(receiveCompletion: { response in
